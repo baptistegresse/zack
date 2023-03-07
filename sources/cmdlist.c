@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmdlist.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zrebhi <zrebhi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bgresse <bgresse@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 16:12:12 by zrebhi            #+#    #+#             */
-/*   Updated: 2023/03/06 16:24:21 by zrebhi           ###   ########.fr       */
+/*   Updated: 2023/03/07 20:04:14 by bgresse          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@ int	ft_error(char **parsed_line, int i)
 	if ((!ft_strcmp(parsed_line[i], ">") \
 		||!ft_strcmp(parsed_line[i], ">>") \
 		|| !ft_strcmp(parsed_line[i], "<") \
-		|| !ft_strcmp(parsed_line[i], "<<")) \
-		|| !ft_strcmp(parsed_line[i], "|") \
-		|| !ft_strcmp(parsed_line[i], "||"))
+		|| !ft_strcmp(parsed_line[i], "<<")))
 	{
 		if (!parsed_line[i + 1])
 			return (1);
@@ -38,6 +36,10 @@ int	ft_error(char **parsed_line, int i)
 			|| !ft_strcmp(parsed_line[i + 1], "||"))
 			return (2);
 	}
+	if (!ft_strcmp(parsed_line[i], "|") || \
+		!ft_strcmp(parsed_line[i], "||"))
+		if (!parsed_line[i + 1])
+			return (3);
 	return (0);
 }
 
@@ -51,21 +53,11 @@ void	ft_syntax_error(char **parsed_line, int i)
 void	ft_print_error(char **parsed_line, int i)
 {
 	if (ft_error(parsed_line, i) == 1)
-	{
-		if (!ft_strcmp(parsed_line[i], "|") || \
-		!ft_strcmp(parsed_line[i], "||"))
-			ft_syntax_error(parsed_line, i);
-		else
-			ft_putstr_fd("syntax error near unexpected token 'newline'\n", 2);
-	}
+		ft_putstr_fd("syntax error near unexpected token 'newline'\n", 2);
 	if (ft_error(parsed_line, i) == 2)
-	{
-		if (!ft_strcmp(parsed_line[i], "|") || \
-		!ft_strcmp(parsed_line[i], "||"))
-			ft_syntax_error(parsed_line, i + 1);
-		else
-			ft_syntax_error(parsed_line, i + 1);
-	}
+		ft_syntax_error(parsed_line, i + 1);
+	if (ft_error(parsed_line, i) == 3)
+		ft_syntax_error(parsed_line, i);
 }
 
 /* For each node of our cmd list,
@@ -103,7 +95,7 @@ void	ft_fullcmds(char **parsed_line, t_cmdlist *cmds, int i, int j)
 in the input line and useful informations for each of them. */
 
 char	**ft_remove_quotes(char **strs);
-void	ft_check_heredoc(char *cmd_line, t_cmdlist *cmds, t_env **head);
+int	ft_check_heredoc(char *cmd_line, t_cmdlist *cmds, t_env **head);
 int		ft_redirection(char **parsed_line, t_cmdlist *cmds);
 
 t_cmdlist	*ft_cmdlist(char *cmd_line, t_minishell *data)
@@ -113,7 +105,8 @@ t_cmdlist	*ft_cmdlist(char *cmd_line, t_minishell *data)
 
 	cmds = 0;
 	ft_newnode(&cmds);
-	ft_check_heredoc(cmd_line, cmds, &data->head_env);
+	if (!ft_check_heredoc(cmd_line, cmds, &data->head_env))
+		return (0);
 	cmd_line = ft_expand_var(&data->head_env, cmd_line);
 	parsed_line = ft_split_tokens(cmd_line, "<|>");
 	parsed_line = ft_remove_quotes(parsed_line);

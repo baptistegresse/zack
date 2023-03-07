@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zrebhi <zrebhi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bgresse <bgresse@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 14:51:24 by zrebhi            #+#    #+#             */
-/*   Updated: 2023/03/06 12:44:18 by zrebhi           ###   ########.fr       */
+/*   Updated: 2023/03/07 20:08:16 by bgresse          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,14 @@ int	ft_redirection(char **parsed_line, t_cmdlist *cmds)
 		else if (!ft_strcmp(parsed_line[i], ">>"))
 			ft_redirect_outfile_append(parsed_line, cmds, i);
 		else if (!ft_strcmp(parsed_line[i], ">"))
+		{
+			if (parsed_line[i + 1] && parsed_line[i + 2] && !ft_strcmp(parsed_line[i + 1], "|"))
+			{
+				i++;
+				continue ;
+			}	
 			ft_redirect_outfile(parsed_line, cmds, i);
+		}	
 		if (ft_error(parsed_line, i))
 		{
 			ft_print_error(parsed_line, i);

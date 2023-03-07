@@ -3,10 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: bgresse <bgresse@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/04 13:17:49 by zrebhi            #+#    #+#             */
+/*   Updated: 2023/03/07 20:06:02 by bgresse          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: zrebhi <zrebhi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:17:49 by zrebhi            #+#    #+#             */
-/*   Updated: 2023/03/07 15:10:28 by zrebhi           ###   ########.fr       */
+/*   Updated: 2023/03/07 18:28:56 by zrebhi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +82,7 @@ void	ft_incubator(t_minishell *data)
 
 int	pipex_heredoc(t_minishell *data)
 {
-	if (data->cmds->here_doc == 1)
+	if (data->cmds->here_doc >= 1)
 	{
 		if (!data->cmds->limiter || data->cmds->error)
 			return (0);
@@ -134,15 +146,6 @@ void	pipex(t_minishell *data)
 	{
 		waitpid(data->cmds->cmd_pid, &data->status, 0);
 		g_status = WEXITSTATUS(g_status);
-		data->cmds = data->cmds->next;
-	}
-	data->cmds = head;
-	while (data->cmds)
-	{
-		if (close(data->cmds->outfile) == -1)
-				perror("close outfile");
-		if (close(data->cmds->infile) == -1)
-				perror("close infile");
 		data->cmds = data->cmds->next;
 	}
 	exit (g_status);

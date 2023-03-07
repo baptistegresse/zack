@@ -6,7 +6,7 @@
 /*   By: bgresse <bgresse@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 20:12:41 by zrebhi            #+#    #+#             */
-/*   Updated: 2023/03/07 17:22:10 by bgresse          ###   ########.fr       */
+/*   Updated: 2023/03/07 20:42:05 by bgresse          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	handle_ctrl_c(int signum, siginfo_t *info, void *context)
 	(void)info;
 	(void)context;
 	write(1, "\n", 1);
-	// rl_replace_line("", 0);
-	// rl_on_new_line();
-	// rl_redisplay();
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
 	g_status = 128 + signum;
 }
 
